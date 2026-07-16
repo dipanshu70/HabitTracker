@@ -31,27 +31,27 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                // Disable CSRF for REST APIs
-                .csrf(csrf -> csrf.disable())
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+            http
+                    // Disable CSRF for REST APIs
+                    .csrf(csrf -> csrf.disable())
 
-                // 2. JWTs are stateless. We tell Spring NOT to save sessions in memory.
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    // 2. JWTs are stateless. We tell Spring NOT to save sessions in memory.
+                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // 3. Configure who is allowed to access what
-                .authorizeHttpRequests(auth -> auth
-                        // Note: I added /User/login here too, because users need to be able
-                        // to log in to GET their token in the first place!
-                        .requestMatchers("/User/signup", "/User/login").permitAll()
+                    // 3. Configure who is allowed to access what
+                    .authorizeHttpRequests(auth -> auth
+                            // Note: I added /User/login here too, because users need to be able
+                            // to log in to GET their token in the first place!
+                            .requestMatchers("/User/signup", "/User/login","/error").permitAll()
 
-                        // Locks down EVERY other endpoint. Requires a valid JWT.
-                        .anyRequest().authenticated()
-                )
+                            // Locks down EVERY other endpoint. Requires a valid JWT.
+                            .anyRequest().authenticated()
+                    )
 
-                // 4. Put your JWT filter at the front of the line
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                    // 4. Put your JWT filter at the front of the line
+                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
+            return http.build();
+        }
     }
-}
