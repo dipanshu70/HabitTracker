@@ -32,7 +32,7 @@ public class HabitController {
     @DeleteMapping("/delete/{habitid}")
     public ResponseEntity<Void> deleteHabit(@PathVariable String habitid, Authentication authentication) {
         String userId = authentication.getName();
-        habitService.deleteHabit(userId, habitid);
+        habitService.deleteHabit(habitid, userId);
         return ResponseEntity.noContent().build();
     }
 
